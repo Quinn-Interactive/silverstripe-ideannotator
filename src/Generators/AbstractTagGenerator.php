@@ -2,6 +2,8 @@
 
 namespace SilverLeague\IDEAnnotator\Generators;
 
+use ArgumentCountError;
+use Exception;
 use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
 use phpDocumentor\Reflection\DocBlock\StandardTagFactory;
 use phpDocumentor\Reflection\DocBlock\Tag;
@@ -215,7 +217,13 @@ abstract class AbstractTagGenerator
         if ($reflection->isAbstract()) {
             return;
         }
-        if (Injector::inst()->get($this->className) instanceof Extension) {
+        try {
+            $obj = Injector::inst()->get($this->className);
+        } catch (ArgumentCountError $e) {
+            echo sprintf("Cannot annotate %s:\n%s\n", $this->className, $e->getMessage());
+            return;
+        }
+        if ($obj instanceof Extension) {
             $owners = iterator_to_array($this->getOwnerClasses($className));
             $owners[] = $this->className;
             $tagString = sprintf('\\%s $owner', implode("|\\", array_values($owners)));
