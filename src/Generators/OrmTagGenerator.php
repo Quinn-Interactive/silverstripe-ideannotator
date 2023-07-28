@@ -67,7 +67,7 @@ class OrmTagGenerator extends AbstractTagGenerator
     {
         if ($fields = (array)$this->getClassConfig('db')) {
             foreach ($fields as $fieldName => $dbFieldType) {
-                $this->pushPropertyTag($this->getTagNameForDBField($dbFieldType) . " \$$fieldName");
+                $this->pushPropertyTag(sprintf('?%s $%s', $this->getTagNameForDBField($dbFieldType), $fieldName));
             }
         }
     }
@@ -128,11 +128,11 @@ class OrmTagGenerator extends AbstractTagGenerator
         if ($fields = (array)$this->getClassConfig('has_one')) {
             foreach ($fields as $fieldName => $dataObjectName) {
                 $this->pushPropertyTag("int \${$fieldName}ID");
-                
+
                 if ($dataObjectName === DataObject::class) {
                     $this->pushPropertyTag("string \${$fieldName}Class");
                 }
-                
+
                 $dataObjectName = $this->getAnnotationClassName($dataObjectName);
                 $tagString = "{$dataObjectName} {$fieldName}()";
 
