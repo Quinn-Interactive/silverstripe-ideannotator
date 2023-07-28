@@ -226,7 +226,7 @@ abstract class AbstractTagGenerator
         if ($obj instanceof Extension) {
             $owners = iterator_to_array($this->getOwnerClasses($className));
             $owners[] = $this->className;
-            $tagString = sprintf('\\%s $owner', implode("|\\", array_values($owners)));
+            $tagString = sprintf('\\%s $owner', implode("&\\", array_values($owners)));
             if (DataObjectAnnotator::config()->get('use_short_name')) {
                 foreach ($owners as $key => $owner) {
                     $owners[$key] = $this->getAnnotationClassName($owner);
